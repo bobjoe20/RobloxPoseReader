@@ -1,0 +1,15 @@
+[package]
+name = "roblox-pose-reader"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "pxc-roblox"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = true
+panic = "abort"
+strip = true
