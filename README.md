@@ -12,7 +12,7 @@ Your account could be banned. Use one you can afford to lose.
 ## Download
 
 Grab `pxc-roblox.exe` from the [latest release](../../releases/latest). It is a
-single file, needs no install, and has no dependencies beyond Windows itself.
+single file and needs no install.
 
 It is not code signed, so Windows shows "Windows protected your PC" on the first
 run. Every release is built here by GitHub Actions and carries a provenance
@@ -52,7 +52,9 @@ tell when this process has stalled. `src/export.rs` has the layout.
 
 ## Build
 
-Needs the Rust toolchain and the MSVC build tools. No other dependencies.
+Needs the Rust toolchain, the MSVC build tools, and the
+[Proximity Core companion SDK](https://proximitycore.net/bridges/companion-sdk.html)
+0.5.0 unzipped into `sdk/`.
 
 ```
 cargo build --release
@@ -60,6 +62,12 @@ cargo build --release
 
 The binary lands in `target/x86_64-pc-windows-msvc/release/pxc-roblox.exe`.
 Windows on ARM builds it too; the x64 binary reads the x64 game.
+
+The exe carries the SDK's signed `proximity_companion.dll` inside it, which is
+how the reader shows up in Proximity Core as a companion that Proximity Core can
+start whenever Roblox runs. The build accepts only that exact DLL, checked by
+hash. At startup the exe writes it unchanged to
+`%LOCALAPPDATA%\RobloxPoseReader` and loads it from there.
 
 ## Diagnostics
 

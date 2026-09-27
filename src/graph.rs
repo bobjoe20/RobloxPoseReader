@@ -401,7 +401,7 @@ pub fn resolve(t: &Target) -> Result<Resolved, String> {
         anchors.players_strings.len()
     );
     if anchors.root_part_text.is_empty() {
-        return Err("no HumanoidRootPart name in memory — is a character spawned?".into());
+        return Err("no HumanoidRootPart name in memory. Is a character spawned?".into());
     }
 
     eprintln!("[2/3] sweeping for root-part string objects…");
@@ -497,7 +497,7 @@ pub fn resolve(t: &Target) -> Result<Resolved, String> {
             }
         }
     }
-    Err("found root parts but no LocalPlayer whose Character owns one — character not spawned yet?".into())
+    Err("found root parts, but no LocalPlayer whose Character owns one. Has the character spawned yet?".into())
 }
 
 // Camera.CFrame sits directly before Camera.Focus and looks at it, or sits on

@@ -1,7 +1,10 @@
 [package]
 name = "roblox-pose-reader"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
+
+[build-dependencies]
+sha2 = "0.10"
 
 [[bin]]
 name = "pxc-roblox"

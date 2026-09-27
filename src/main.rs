@@ -6,10 +6,12 @@
 
 #![windows_subsystem = "windows"]
 
+mod companion;
 mod export;
 mod graph;
 mod gui;
 mod process;
+mod sdk;
 mod tracker;
 
 use process::{find_roblox_pids, orthonormal, Target};

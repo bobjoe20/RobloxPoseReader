@@ -12,11 +12,30 @@ permissions:
   id-token: write
   attestations: write
 
+env:
+  # The companion SDK from proximitycore.net. build.rs pins the DLL inside it by
+  # hash too; move all three together.
+  SDK_VERSION: 0.5.0
+  SDK_SHA256: fda82e03152a66c1c0b46d7033f2424ba5e12f226d6511f6cc830666cf8a185a
+
 jobs:
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Fetch the companion SDK
+        shell: pwsh
+        run: |
+          $sdk = "pxc-companion-sdk-$env:SDK_VERSION-windows-x64.zip"
+          Invoke-WebRequest "https://proximitycore.net/downloads/$sdk" -OutFile $sdk
+          if ((Get-FileHash $sdk -Algorithm SHA256).Hash -ne $env:SDK_SHA256) {
+            throw "$sdk does not match its pinned hash"
+          }
+          Expand-Archive $sdk sdk
+          if ((Get-AuthenticodeSignature sdk/proximity_companion.dll).Status -ne 'Valid') {
+            throw "proximity_companion.dll is not validly signed"
+          }
 
       - run: cargo build --release
 
@@ -42,7 +61,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           {
-            echo "Built by GitHub Actions from \`$GITHUB_SHA\`."
+            echo "Built by GitHub Actions from \`$GITHUB_SHA\`, with companion SDK $SDK_VERSION."
             echo
             echo "SHA-256: \`$(cut -d' ' -f1 sha256.txt)\`"
             echo

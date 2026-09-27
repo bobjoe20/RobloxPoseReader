@@ -1,5 +1,6 @@
 // Background thread: wait for Roblox, resolve, publish the pose at 60 Hz.
 
+use super::companion;
 use super::export;
 use super::graph::{self, Resolved, RootPose};
 use super::process::{find_roblox_pids, Target};
@@ -58,9 +59,11 @@ fn set_status(shared: &Shared, status: String) {
         s.camera = None;
     });
     export::publish(0, None, None);
+    companion::publish(0, None, None);
 }
 
 pub fn spawn(shared: Shared) {
+    companion::open();
     thread::spawn(move || loop {
         let pids = find_roblox_pids();
         if pids.is_empty() {
@@ -113,6 +116,7 @@ fn track(shared: &Shared, target: &Target, mut resolved: Resolved) {
             s.camera = camera;
         });
         export::publish(target.pid, player, camera);
+        companion::publish(target.pid, player, camera);
         thread::sleep(TICK);
     }
 }
